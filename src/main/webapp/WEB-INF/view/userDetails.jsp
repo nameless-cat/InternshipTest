@@ -38,7 +38,7 @@
     <div class="filter-container">
         <form:form method="post" enctype="application/x-www-form-urlencoded" action="/filter" modelAttribute="user">
             <label >Filter by name:</label>
-            <form:input path="name" size="25" value="${filter}" placeholder="alphabetic, digits, -" />
+            <form:input path="name" size="25" maxlength="25" value="${filter}" placeholder="alphabetic, digits, -" />
             <input type="submit" class="blue-button" value="Filter"/>
         </form:form>
     </div>
