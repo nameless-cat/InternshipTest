@@ -21,7 +21,7 @@
         </tr>
         <tr>
             <td><form:label path="age">Age:</form:label></td>
-            <td><form:input path="age" size="5" maxlength="5"></form:input></td>
+            <td><form:input path="age" size="3" maxlength="3"></form:input></td>
         </tr>
         <tr>
             <td><form:label path="admin">Admin</form:label></td>
