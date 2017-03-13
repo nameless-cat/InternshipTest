@@ -6,13 +6,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.nameless.helpers.Validator;
+import com.nameless.helpers.UserValidator;
 import com.nameless.model.User;
 import com.nameless.service.UserService;
 import com.nameless.helpers.TagNavigatorBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -22,6 +23,8 @@ public class MainController
     @Autowired
     UserService userService;
 
+    @Autowired
+    UserValidator validator;
 
     private String notFoundRedirect = "redirect:/userNotFound";
     private String wrongNameRedirect = "redirect:/wrongUserName";
@@ -61,12 +64,14 @@ public class MainController
     }
 
     @RequestMapping(value = "/addUser", method = RequestMethod.POST, headers = "Accept=application/x-www-form-urlencoded")
-    public String addUser(@ModelAttribute("user") User user, Model model)
+    public String addUser(@ModelAttribute("user") User user, BindingResult bindingResult, Model model)
     {
-        if (!Validator.isValidName(user.getName()))
+        validator.validate(user, bindingResult);
+
+        if (bindingResult.hasFieldErrors("name"))
             return wrongNameRedirect;
 
-        if (!Validator.isValidAge(user.getAge()))
+        if (bindingResult.hasFieldErrors("age"))
             return wrongAgeRedirect;
 
         if (user.getId() == 0)
@@ -77,7 +82,7 @@ public class MainController
             userService.updateUser(user);
         }
 
-        return "redirect:/getAllUsers";
+        return defaultRedirect;
     }
 
     @RequestMapping(value = "/updateUser/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
@@ -92,7 +97,7 @@ public class MainController
     public String deleteUser(@PathVariable("id") int id)
     {
         userService.deleteUser(id);
-        return "redirect:/getAllUsers";
+        return defaultRedirect;
 
     }
 
@@ -100,16 +105,21 @@ public class MainController
     public String spawnUserData()
     {
         userService.spawnUserData();
-        return "redirect:/getAllUsers";
+        return defaultRedirect;
     }
 
     @RequestMapping(value = "/filter", method = RequestMethod.POST, headers = "Accept=application/json")
-    public String filterUser(@RequestParam("filter") String filter, Model model)
+    public String filterUser(@ModelAttribute("user") User user, BindingResult bindingResult, Model model)
     {
-        if (!Validator.isValidName(filter))
+        if (user.getName() == null || "".equals(user.getName()))
+            return defaultRedirect;
+
+        validator.validate(user, bindingResult);
+
+        if (bindingResult.hasFieldErrors("name"))
             return wrongNameRedirect;
 
-        return String.format("redirect:/filter/%s/1", filter);
+        return String.format("redirect:/filter/%s/1", user.getName());
     }
 
     @RequestMapping(value = "/filter/{userName}/{page}", method = RequestMethod.GET, headers = "Accept=application/json")
@@ -118,7 +128,7 @@ public class MainController
         if (name == null || "".equals(name))
             return defaultRedirect;
 
-        if (!Validator.isValidName(name))
+        if (!UserValidator.isNameValid(name))
             return wrongNameRedirect;
 
         List<User> listOfUsers = new ArrayList<>();
@@ -158,11 +168,6 @@ public class MainController
     public String wrongUserAge()
     {
         return "wrongUserAge";
-    }
-
-    private void setNameError(Model model)
-    {
-        model.addAttribute("error", "Wrong user name");
     }
 
     private void buildModel(Model model, List<User> listOfUsers, int page, String linkBase)
