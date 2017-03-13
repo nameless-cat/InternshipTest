@@ -12,4 +12,9 @@ public class Validator
 
         return name.matches("[a-zA-Z0-9\\-]+");
     }
+
+    public static boolean isValidAge(int age)
+    {
+        return (age < 1) ? false : true;
+    }
 }

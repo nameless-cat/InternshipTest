@@ -51,7 +51,7 @@ public class FakeUserData
         for (int i = 0; i < 130; i++)
         {
             String name = userNames.get(r.nextInt(userNames.size()));
-            User u = new User(name, r.nextInt(100));
+            User u = new User(name, r.nextInt(100) + 1);
 
             session.save(u);
         }

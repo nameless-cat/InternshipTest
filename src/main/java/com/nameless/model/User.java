@@ -14,7 +14,6 @@ public class User
 {
 	
 	@Id
-	// toDo make Unique
 	@Column(name="ID", columnDefinition = "INT(8)")
 	@GeneratedValue
 	private int id;

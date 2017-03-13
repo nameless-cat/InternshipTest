@@ -1,6 +1,6 @@
 .btn {
-  -webkit-border-radius: 2;
-  -moz-border-radius: 2;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
   font-family: Helvetica, sans-serif;
   font-size: 15px;
   border-radius: 2px;
@@ -27,7 +27,7 @@
 
 .error-container, .notify-container {
   margin: 50px 20px;
-	width: 300px;
+	width: 500px;
 	display: block;
 }
 

@@ -1,9 +1,6 @@
 package com.nameless.controller;
 
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +8,6 @@ import java.util.Map;
 
 import com.nameless.helpers.Validator;
 import com.nameless.model.User;
-import com.nameless.service.Filter;
 import com.nameless.service.UserService;
 import com.nameless.helpers.TagNavigatorBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +26,8 @@ public class MainController
     private String notFoundRedirect = "redirect:/userNotFound";
     private String wrongNameRedirect = "redirect:/wrongUserName";
     private String defaultRedirect = "redirect:/getAllUsers";
+    private String wrongAgeRedirect = "redirect:/wrongUserAge";
+    private String redirect404 = "redirect:/404";
 
     @RequestMapping(value = "/getAllUsers", method = RequestMethod.GET, headers = "Accept=application/json")
     public String getUsers(Model model)
@@ -48,7 +46,7 @@ public class MainController
 
         } catch (IllegalArgumentException e)
         {
-            return "redirect:/404";
+            return redirect404;
         }
 
         buildModel(model, listOfUsers, page, "/getAllUsers");
@@ -67,6 +65,9 @@ public class MainController
     {
         if (!Validator.isValidName(user.getName()))
             return wrongNameRedirect;
+
+        if (!Validator.isValidAge(user.getAge()))
+            return wrongAgeRedirect;
 
         if (user.getId() == 0)
         {
@@ -127,7 +128,7 @@ public class MainController
 
         } catch (IllegalArgumentException e)
         {
-            return "redirect:/404";
+            return redirect404;
         }
 
         if (listOfUsers.size() == 0)
@@ -151,6 +152,12 @@ public class MainController
     public String wrongUserName()
     {
         return "wrongUserName";
+    }
+
+    @RequestMapping(value = "/wrongUserAge", method = RequestMethod.GET)
+    public String wrongUserAge()
+    {
+        return "wrongUserAge";
     }
 
     private void setNameError(Model model)
