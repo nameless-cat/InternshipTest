@@ -30,7 +30,7 @@ public class UserValidator implements Validator
 
         if (!u.getName().matches(namePattern))
             errors.rejectValue("name", "nameIllegalChars");
-        if (u.getAge() < 1)
+        if (1 > u.getAge() || u.getAge() > 120)
             errors.rejectValue("age", "ageIllegalValue");
 
     }

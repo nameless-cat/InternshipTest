@@ -11,7 +11,7 @@
 <body>
 
 <div class="error-container">
-    <span class="error">User age must be natural number and bigger than zero.</span>
+    <span class="error">User age must be natural number from 1 to 120.</span>
     <div class="return-button">
         <a class="btn" href="/getAllUsers">Got it!</a>
     </div>
